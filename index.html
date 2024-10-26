@@ -1,607 +1,297 @@
-<html><head><base href="https://moodringwonders.com/">
+<html><head><base href="https://saintsjourney.org/">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodSync - Interactive Mood Ring Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-    
+    <title>Journey Through Sainthood - Catholic Saints & Their Stories</title>
     <style>
-      :root {
-        --primary-color: #1a1a2e;
-        --secondary-color: #16213e;
-        --accent-color: #3490de;
-        --text-color: #e6e6e6;
-        --gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        --card-gradient: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-        --base-font-size: min(16px, 4vw);
-      }
-      
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        scroll-behavior: smooth;
-      }
-      
-      body {
-        font-family: 'Poppins', sans-serif;
-        background-color: var(--primary-color);
-        color: var(--text-color);
-        line-height: 1.6;
-        overflow-x: hidden;
-        font-size: var(--base-font-size);
-      }
-      
-      .glass-effect {
-        background: var(--card-gradient);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
-      }
-      
-      #particles-js {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-      }
-      
-      .content-wrapper {
-        position: relative;
-        z-index: 1;
-      }
-      
-      header {
-        background: var(--gradient);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-      }
-      
-      .hero-content {
-        text-align: center;
-        padding: 2rem;
-        max-width: 800px;
-      }
-      
-      h1 {
-        font-size: 4.5rem;
-        font-weight: 700;
-        margin: 0;
-        background: linear-gradient(45deg, #3490de, #6e48aa);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      }
-      
-      .tagline {
-        font-size: 1.5rem;
-        margin: 1rem 0;
-        opacity: 0.9;
-      }
-      
-      .hamburger {
-  display: none;
-  cursor: pointer;
-  font-size: 2rem;
-  color: var(--text-color);
-}
-
-#nav-links {
-  display: flex;
-}
-
-@media (max-width: 768px) {
-  .hamburger {
-    display: block;
-  }
-
-  #nav-links {
-    display: none; /* Hide links by default */
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 1rem 0;
-  }
-
-  #nav-links.show {
-    display: flex; /* Show links when toggled */
-  }
-
-  nav ul {
-    gap: 1rem;
-  }
-
-  nav a {
-    padding: 0.5rem 1rem;
-    font-size: 1rem; /* Smaller font size */
-  }
-}
-      
-      main {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 4rem 2rem;
-      }
-      
-      .mood-detector {
-        background: var(--card-gradient);
-        padding: 3rem;
-        border-radius: 30px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        margin: 4rem 0;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-      
-      #finger-sensor {
-        width: 250px;
-        height: 250px;
-        border-radius: 50%;
-        margin: 2rem auto;
-        background: var(--gradient);
-        cursor: pointer;
-        transition: all 0.4s ease;
-        box-shadow: 0 0 50px rgba(52, 144, 222, 0.3);
-        position: relative;
-      }
-      
-      #finger-sensor:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 70px rgba(52, 144, 222, 0.5);
-      }
-      
-      #finger-sensor::before {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        border: 2px solid rgba(255,255,255,0.1);
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-      }
-      
-      @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(1.2); opacity: 0; }
-      }
-      
-      .mood-result {
-        font-size: 1.5rem;
-        margin-top: 2rem;
-        padding: 2rem;
-        border-radius: 20px;
-        display: none;
-        transform: translateY(20px);
-        opacity: 0;
-        transition: all 0.5s ease;
-      }
-      
-      .mood-result.active {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      
-      .color-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 4rem 0;
-      }
-      
-      .color-card {
-        height: 300px;
-        perspective: 1000px;
-        cursor: pointer;
-      }
-      
-      .card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.8s;
-        transform-style: preserve-3d;
-      }
-      
-      .color-card:hover .card-inner {
-        transform: rotateY(180deg);
-      }
-      
-      .card-front, .card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        background: var(--card-gradient);
-        border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-      }
-      
-      .card-back {
-        transform: rotateY(180deg);
-        background: var(--gradient);
-      }
-      
-      .color-sample {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        margin: 1rem auto;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        transition: all 0.3s ease;
-      }
-      
-      .science-section {
-        padding: 4rem 0;
-      }
-      
-      .science-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        align-items: center;
-      }
-      
-      .science-visualization {
-        position: relative;
-        height: 400px;
-        background: var(--card-gradient);
-        border-radius: 20px;
-        overflow: hidden;
-      }
-      
-      @media (max-width: 768px) {
-        nav {
-          padding: 0.5rem;
-        }
-        
-        nav ul {
-          flex-direction: column;
-          gap: 1rem;
-          padding: 1rem 0;
-        }
-        
-        nav a {
-          display: block;
-          width: 100%;
-          text-align: center;
-          padding: 0.75rem;
-        }
-        
-        h1 {
-          font-size: 3rem;
-        }
-        
-        .tagline {
-          font-size: 1.2rem;
-          padding: 0 1rem;
-        }
-        
-        .mood-detector {
-          padding: 2rem 1rem;
-          margin: 2rem 0;
-        }
-        
-        #finger-sensor {
-          width: 200px;
-          height: 200px;
-          margin: 1.5rem auto;
-        }
-        
-        .mood-result {
-          font-size: 1.2rem;
-          padding: 1.5rem;
-        }
-        
-        .color-grid {
-          grid-template-columns: 1fr;
-          gap: 1.5rem;
-          margin: 2rem 0;
-        }
-        
-        .color-card {
-          height: 250px;
-        }
-        
-        .science-section {
-          padding: 2rem 1rem;
-        }
-        
-        .science-content {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-        }
-        
-        .science-visualization {
-          height: 300px;
-        }
-      }
+    :root {
+      --primary: #2b3240;
+      --accent: #8b0000;
+      --gold: #d4af37;
+      --light: #f4f1ea;
+    }
     
-      @media (max-width: 968px) {
-        h1 { font-size: 3rem; }
-        .science-content { grid-template-columns: 1fr; }
-        nav ul { flex-direction: column; align-items: center; }
-      }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 1.6;
+      color: var(--primary);
+      background: linear-gradient(135deg, #f4f1ea 0%, #e6dfd4 100%);
+    }
+    
+    .header {
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                  url('https://images.unsplash.com/photo-1548515943-f1c2c5e21a1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 6rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(0,0,0,0) 70%);
+    }
+    
+    .header h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      font-family: 'Cinzel', serif;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    
+    .header p {
+      font-size: 1.5rem;
+      font-style: italic;
+      position: relative;
+    }
+    
+    nav {
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      gap: 3rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      position: relative;
+      padding-bottom: 5px;
+    }
+    
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+    
+    nav a:hover::after {
+      width: 100%;
+    }
+    
+    .saint-card {
+      background: white;
+      border-radius: 15px;
+      padding: 3rem;
+      margin: 3rem auto;
+      max-width: 900px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .saint-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(to right, var(--accent), var(--gold));
+    }
+    
+    .saint-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .saint-content {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    
+    .saint-image {
+      width: 300px;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .feast-day {
+      color: var(--accent);
+      font-weight: bold;
+      margin: 1rem 0;
+      font-size: 1.2rem;
+    }
+    
+    .explanation {
+      background: white;
+      padding: 3rem;
+      margin: 3rem auto;
+      max-width: 900px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .explanation h2 {
+      color: var(--accent);
+      font-family: 'Cinzel', serif;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+    
+    .explanation h3 {
+      color: var(--primary);
+      margin: 1.5rem 0 1rem 0;
+      font-size: 1.5rem;
+    }
+    
+    .explanation ul {
+      margin-left: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .saint-title {
+      font-family: 'Cinzel', serif;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .saint-card {
+      animation: fadeIn 1s ease-out;
+    }
+    
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
     </head>
     <body>
-      <div id="particles-js"></div>
-      
-      <div class="content-wrapper">
-        <nav>
-	   <div class="hamburger" onclick="toggleMenu()">
-   	     <i class="fas fa-bars"></i>
-  	   </div>
-          <ul id="nav-links">
-            <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="#mood-detector"><i class="fas fa-fingerprint"></i> Mood Detector</a></li>
-            <li><a href="#meanings"><i class="fas fa-palette"></i> Color Meanings</a></li>
-            <li><a href="#science"><i class="fas fa-microscope"></i> The Science</a></li>
-          </ul>
-        </nav>
     
-        <header id="home">
-          <div class="hero-content">
-            <h1>MoodSync</h1>
-            <p class="tagline">Discover the colors of your emotions through cutting-edge mood detection technology</p>
-            <a href="#mood-detector" class="cta-button glass-effect">
-              <i class="fas fa-chevron-down"></i> Begin Your Journey
-            </a>
+    <div class="header">
+      <h1>Saints Among Us</h1>
+      <p>Discovering the Holy Lives That Light Our Path</p>
+    </div>
+    
+    <nav>
+      <ul>
+        <li><a href="#padre-pio">St. Padre Pio</a></li>
+        <li><a href="#jude">St. Jude Thaddeus</a></li>
+        <li><a href="#carlo">Bl. Carlo Acutis</a></li>
+        <li><a href="#about-saints">About Saints</a></li>
+      </ul>
+    </nav>
+    
+    <main>
+      <div class="saint-card" id="padre-pio">
+        <div class="saint-content">
+          <img src="data:image/jpeg;base64,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" 
+               alt="Saint Padre Pio celebrating Mass wearing his iconic gloves" class="saint-image" width="300" height="400">
+          <div>
+            <h2 class="saint-title">Saint Padre Pio</h2>
+            <p class="feast-day">Feast Day: September 23</p>
+            <p>Born Francesco Forgione in 1887, Padre Pio was an Italian Franciscan Capuchin friar known for his profound spirituality and the miraculous stigmata he bore for 50 years. He was known for his ability to read souls in confession, bilocation, and healing powers. Despite facing much scrutiny and skepticism, he remained devoted to serving God through hearing confessions and celebrating Mass.</p>
+            <p><strong>Patron Saint of:</strong> Civil defense volunteers, adolescents, stress relief, and January blues</p>
           </div>
-        </header>
-    
-        <main>
-          <section id="mood-detector" class="mood-detector">
-            <h2><i class="fas fa-fingerprint"></i> Mood Detection Zone</h2>
-            <p>Place your finger on the sensor below and let the magic happen!</p>
-            <div id="finger-sensor"></div>
-            <div class="mood-result glass-effect"></div>
-          </section>
-    
-          <section id="meanings">
-            <h2><i class="fas fa-palette"></i> Understanding Mood Colors</h2>
-            <div class="color-grid">
-              <!-- Color cards will be dynamically generated -->
-            </div>
-          </section>
-    
-          <section id="science" class="science-section glass-effect">
-            <h2><i class="fas fa-microscope"></i> The Science Behind Mood Rings</h2>
-            <div class="science-content">
-              <div class="science-text">
-                <p>Mood rings utilize advanced thermochromic liquid crystals that respond to subtle changes in your body temperature. These microscopic crystals twist and turn based on temperature variations, affecting how they reflect light and creating the beautiful color changes you observe.</p>
-              </div>
-              <div class="science-visualization" id="crystal-animation">
-                <!-- WebGL visualization will be added here -->
-              </div>
-            </div>
-          </section>
-        </main>
+        </div>
       </div>
     
-      <script>
-        // Initialize particles.js
-        particlesJS('particles-js',
-          {
-            "particles": {
-              "number": {
-                "value": 80,
-                "density": {
-                  "enable": true,
-                  "value_area": 800
+      <div class="saint-card" id="jude">
+        <div class="saint-content">
+          <img src="data:image/jpeg;base64,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" 
+               alt="Classical painting of Saint Jude Thaddeus holding his iconic medallion" class="saint-image" width="300" height="400">
+          <div>
+            <h2 class="saint-title">Saint Jude Thaddeus</h2>
+            <p class="feast-day">Feast Day: October 28</p>
+            <p>One of Jesus' twelve apostles, St. Jude Thaddeus is perhaps the most popular patron of hopeless causes. After Christ's death, he preached the Gospel in Mesopotamia, Libya, and Persia with St. Simon. His attribute is a club, the instrument of his martyrdom. He wrote an epistle that is included in the New Testament.</p>
+            <p><strong>Patron Saint of:</strong> Hopeless causes, desperate situations, and hospitals</p>
+          </div>
+        </div>
+      </div>
+    
+      <div class="saint-card" id="carlo">
+        <div class="saint-content">
+          <img src="data:image/jpeg;base64,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" 
+               alt="Official beatification image of Blessed Carlo Acutis" class="saint-image" width="300" height="400">
+          <div>
+            <h2 class="saint-title">Blessed Carlo Acutis</h2>
+            <p class="feast-day">Feast Day: October 12</p>
+            <p>A modern-day example of holiness, Carlo Acutis (1991-2006) was an Italian teenager known for documenting Eucharistic miracles around the world and creating a website to share them. Despite his young age, he showed remarkable devotion to the Eucharist and used his computer skills to spread the faith. He died of leukemia at age 15, offering his sufferings for the Church.</p>
+            <p><strong>Patron Saint of:</strong> Internet users, computer programmers, and youth</p>
+          </div>
+        </div>
+      </div>
+    
+      <div class="explanation" id="about-saints">
+        <h2>Why Do Catholics Celebrate Feast Days and Pray to Saints?</h2>
+        <h3>Feast Days</h3>
+        <p>Feast days are celebrated to honor and remember the special role that saints play in the history of the Church. These celebrations help us to:</p>
+        <ul>
+          <li>Remember the examples of holy lives lived for Christ</li>
+          <li>Draw inspiration from their virtues and dedication</li>
+          <li>Mark important moments in the Church's liturgical calendar</li>
+          <li>Connect with the universal Church across time and space</li>
+        </ul>
+    
+        <h3>Praying to Saints</h3>
+        <p>Catholics don't worship saints but rather ask for their intercession - similar to asking a friend to pray for us. This practice is based on the belief that:</p>
+        <ul>
+          <li>Saints are alive in Christ and part of the Church Triumphant</li>
+          <li>They can intercede for us before God, just as we pray for each other on earth</li>
+          <li>Their lives serve as models of holiness and inspiration</li>
+          <li>They form part of the "communion of saints" that unites all believers</li>
+        </ul>
+      </div>
+    </main>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.saint-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
-              },
-              "color": {
-                "value": "#3490de"
-              },
-              "shape": {
-                "type": "circle"
-              },
-              "opacity": {
-                "value": 0.5,
-                "random": false
-              },
-              "size": {
-                "value": 3,
-                "random": true
-              },
-              "line_linked": {
-                "enable": true,
-                "distance": 150,
-                "color": "#3490de",
-                "opacity": 0.4,
-                "width": 1
-              },
-              "move": {
-                "enable": true,
-                "speed": 2,
-                "direction": "none",
-                "random": false,
-                "straight": false,
-                "out_mode": "out",
-                "bounce": false
-              }
-            },
-            "interactivity": {
-              "detect_on": "canvas",
-              "events": {
-                "onhover": {
-                  "enable": true,
-                  "mode": "repulse"
-                },
-                "onclick": {
-                  "enable": true,
-                  "mode": "push"
-                },
-                "resize": true
-              }
-            },
-            "retina_detect": true
-          }
-        );
-    
-        // Enhanced mood ring color data
-        const moodColors = [
-          { 
-            color: '#000000', 
-            mood: 'Stressed or Anxious', 
-            description: 'Your body is signaling heightened stress levels. Try some deep breathing exercises.',
-            icon: 'fas fa-wind'
-          },
-          { 
-            color: '#4B0082', 
-            mood: 'Deep Relaxation', 
-            description: 'You\'ve achieved a wonderful state of peace and tranquility.',
-            icon: 'fas fa-moon'
-          },
-          { 
-            color: '#0000FF', 
-            mood: 'Calm and Happy', 
-            description: 'Your emotional state is balanced and positive.',
-            icon: 'fas fa-smile'
-          },
-          { 
-            color: '#00FF00', 
-            mood: 'Normal and Active', 
-            description: 'You\'re in an optimal state of mind and body harmony.',
-            icon: 'fas fa-check-circle'
-          },
-          { 
-            color: '#FFFF00', 
-            mood: 'Excited', 
-            description: 'Your energy levels are peaking with positive anticipation.',
-            icon: 'fas fa-bolt'
-          },
-          { 
-            color: '#FFA500', 
-            mood: 'Nervous or Unsettled', 
-            description: 'You might be experiencing some uncertainty or anticipation.',
-            icon: 'fas fa-question-circle'
-          },
-          { 
-            color: '#FF0000', 
-            mood: 'Passionate or Energetic', 
-            description: 'You\'re experiencing intense emotions and high energy.',
-            icon: 'fas fa-fire'
-          }
-        ];
-    
-        // Generate enhanced color cards
-        const colorGrid = document.querySelector('.color-grid');
-        moodColors.forEach(moodData => {
-          const card = document.createElement('div');
-          card.classList.add('color-card');
-          card.innerHTML = `
-            <div class="card-inner">
-              <div class="card-front glass-effect">
-                <i class="${moodData.icon} fa-3x"></i>
-                <div class="color-sample" style="background-color: ${moodData.color}"></div>
-                <h3>${moodData.mood}</h3>
-              </div>
-              <div class="card-back">
-                <i class="${moodData.icon} fa-2x"></i>
-                <p>${moodData.description}</p>
-              </div>
-            </div>
-          `;
-          colorGrid.appendChild(card);
-        });
-    
-        // Enhanced finger sensor interaction
-        const fingerSensor = document.getElementById('finger-sensor');
-        const moodResult = document.querySelector('.mood-result');
-        let touchTimer;
-        let currentTemp = 0;
-    
-        fingerSensor.addEventListener('touchstart', handleTouchStart);
-        fingerSensor.addEventListener('touchend', handleTouchEnd);
-        fingerSensor.addEventListener('mousedown', handleTouchStart);
-        fingerSensor.addEventListener('mouseup', handleTouchEnd);
-        fingerSensor.addEventListener('touchmove', (e) => {
-          e.preventDefault();
-        });
-    
-        function handleTouchStart(e) {
-          e.preventDefault();
-          document.body.style.overflow = 'hidden';
-          currentTemp = 0;
-          gsap.to(fingerSensor, {
-            scale: 0.95,
-            duration: 0.2
-          });
-          touchTimer = setInterval(() => {
-            currentTemp += 1;
-            updateMoodRing();
-          }, 100);
-        }
-    
-        function handleTouchEnd() {
-          clearInterval(touchTimer);
-          document.body.style.overflow = 'auto';
-          gsap.to(fingerSensor, {
-            scale: 1,
-            duration: 0.2
-          });
-          displayMoodResult();
-        }
-    
-        function updateMoodRing() {
-          const hue = (currentTemp * 5) % 360;
-          fingerSensor.style.background = `linear-gradient(145deg, hsl(${hue}, 70%, 50%), hsl(${hue + 40}, 70%, 40%))`;
-        }
-    
-        function displayMoodResult() {
-          const randomMood = moodColors[Math.floor(Math.random() * moodColors.length)];
-          moodResult.style.display = 'block';
-          moodResult.style.backgroundColor = randomMood.color;
-          moodResult.style.color = isColorLight(randomMood.color) ? '#000' : '#fff';
-          moodResult.innerHTML = `
-            <i class="${randomMood.icon} fa-2x"></i>
-            <h3>${randomMood.mood}</h3>
-            <p>${randomMood.description}</p>
-          `;
-          moodResult.classList.add('active');
-        }
-    
-        function isColorLight(color) {
-          const hex = color.replace('#', '');
-          const r = parseInt(hex.substr(0, 2), 16);
-          const g = parseInt(hex.substr(2, 2), 16);
-          const b = parseInt(hex.substr(4, 2), 16);
-          const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-          return brightness > 128;
-        }
-    
-        // Navbar scroll effect
-        function toggleMenu() {
-  const navLinks = document.getElementById('nav-links');
-  navLinks.classList.toggle('show');
-}
-        });
-    
-        // Smooth scroll for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-          anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-              behavior: 'smooth'
             });
-          });
+        }, {
+            threshold: 0.1
         });
-      </script>
+    
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            observer.observe(card);
+        });
+    });
+    </script>
+    
     </body>
     </html>
